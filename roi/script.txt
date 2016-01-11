@@ -1,0 +1,24 @@
+# rename to zstat.nii.gz
+mv task001_parametric_gain_vs_baseline.nii.gz zstat.nii.gz
+
+# make mask: make all values positive by taking square, next binarise (all > 0 becomes 1)
+fslmaths zstat.nii.gz -sqr -bin  zstat_mask.nii.gz
+
+# estimate smoothness 
+# (note: this should be done on residuals, gives biased estimates on statistics image, but the results are realistic)
+smoothest -z zstat.nii.gz -m zstat_mask.nii.gz > smoothness
+awk '/VOLUME/ {print $2}' smoothness > zstat.vol
+awk '/DLH/ {print $2}' smoothness > zstat.dlh
+
+# threshold with clusterwise inference
+cluster -i zstat.nii.gz -t 2.3 -p 0.05 -d $(cat zstat.dlh) --volume=$(cat zstat.vol) --othresh=thres_zstat_clusterwise --connectivity=26
+
+# threshold with voxelwise inference FWE corrected
+RESELcount=$(awk '$1~/VOLUME/{v=$2};$1~/RESELS/{r=$2};END{printf("%g",1.0*v/r)}' smoothness)
+FWEthresh=$(ptoz 0.05 -g $RESELcount)
+$FSLDIR/bin/fslmaths zstat -thr $FWEthresh thresh_zstat_voxelwise
+
+# threshold with voxelwise inference uncorrected
+$FSLDIR/bin/fslmaths zstat -thr 2.3 -bin thresh_zstat_uncorr
+
+

@@ -1,0 +1,30 @@
+ok, here are the data on TACC:
+
+/corral-repl/utexas/poldracklab/openfmri/shared2/ds005/model3_copes.tar
+
+there are 16 files for each run for each subject (all in standard MNI space), which are buried deep in a directory structure, e.g.:
+
+sub008/model/model003/task001_run001.feat/reg_standard/stats/cope12.nii.gz
+
+in this case, the run00X refers to the run number (1-3), and the cope number (1-16) refers to the contrast number.  These contrast numbers refer to positions in the matrix of gain/loss values:
+
+[0, array([ 13. ,   6.5])]
+[1, array([ 13. ,  10.5])]
+[2, array([ 13. ,  14.5])]
+[3, array([ 13. ,  18.5])]
+[4, array([ 21. ,   6.5])]
+[5, array([ 21. ,  10.5])]
+[6, array([ 21. ,  14.5])]
+[7, array([ 21. ,  18.5])]
+[8, array([ 29. ,   6.5])]
+[9, array([ 29. ,  10.5])]
+[10, array([ 29. ,  14.5])]
+[11, array([ 29. ,  18.5])]
+[12, array([ 37. ,   6.5])]
+[13, array([ 37. ,  10.5])]
+[14, array([ 37. ,  14.5])]
+[15, array([ 37. ,  18.5])]
+
+in this printout, the first value is the matrix number ,the second is the mean gain amount across gambles, and the third is the mean loss amount.  thus, losses change most rapidly, gains most slowly
+let me know if any of that is unclear
+
