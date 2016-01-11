@@ -1,0 +1,1 @@
+zip "/corral-repl/utexas/poldracklab/openfmri/shared2/ds005/model3_copes.tar" into this folder.
