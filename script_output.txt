@@ -1,0 +1,57 @@
+c340-101$ # make mask: make all values positive by taking square, next binarise (all > 0 becomes 1)
+c340-101$ fslmaths zstat.nii.gz -sqr -bin  zstat_mask.nii.gz
+c340-101$ 
+c340-101$ # estimate smoothness 
+c340-101$ # (note: this should be done on residuals, gives biased estimates on statistics image, but the results are realistic)
+c340-101$ smoothest -z zstat.nii.gz -m zstat_mask.nii.gz > smoothness
+c340-101$ awk '/VOLUME/ {print $2}' smoothness > zstat.vol
+c340-101$ awk '/DLH/ {print $2}' smoothness > zstat.dlh
+c340-101$ 
+c340-101$ # threshold with clusterwise inference
+c340-101$ cluster -i zstat.nii.gz -t 2.3 -p 0.05 -d $(cat zstat.dlh) --volume=$(cat thresh_zstat1.vol) --othresh=thres_zstat_clusterwise --connectivity=26
+cat: thresh_zstat1.vol: No such file or directory
+
+Part of FSL (build 508)
+cluster 
+Copyright(c) 2000-2013, University of Oxford (Mark Jenkinson, Matthew Webster)
+
+Usage: 
+cluster --in=<filename> --thresh=<value> [options]
+
+Compulsory arguments (You MUST set one or more of):
+	-i,--in,-z,--zstat	filename of input volume
+	-t,--thresh,--zthresh	threshold for input volume
+
+Optional arguments (You may optionally specify one or more of):
+	-o,--oindex	filename for output of cluster index (in size order)
+	--othresh	filename for output of thresholded image
+	--olmax	filename for output of local maxima text file
+	--olmaxim	filename for output of local maxima volume
+	--osize	filename for output of size image
+	--omax	filename for output of max image
+	--omean	filename for output of mean image
+	--opvals	filename for image output of log pvals
+	-p,--pthresh	p-threshold for clusters
+	--peakdist	minimum distance between local maxima/minima, in mm (default 0)
+	-c,--cope	filename of input cope volume
+	--volume	number of voxels in the mask
+	-d,--dlh	smoothness estimate = sqrt(det(Lambda))
+	--fractional	interprets the threshold as a fraction of the robust range
+	--connectivity	the connectivity of voxels (default 26)
+	--mm	use mm, not voxel, coordinates
+	--min	find minima instead of maxima
+	--no_table	suppresses printing of the table info
+	--minclustersize	prints out minimum significant cluster size
+	--minextent	do not report clusters with less than extent voxels
+	-x,--xfm	filename for Linear: input->standard-space transform. Non-linear: input->highres transform
+	--stdvol	filename for standard-space volume
+	--scalarname	give name of scalars (e.g. Z) - to be used in printing output tables
+	-n,--num	no of local maxima to report
+	-v,--verbose	switch on diagnostic messages
+	-h,--help	display this message
+	--warpvol	filename for warpfield
+
+
+
+--volume: Missing non-optional argument!
+

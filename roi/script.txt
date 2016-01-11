@@ -1,5 +1,5 @@
+# file from http://neurovault.org/images/10680/
 # rename to zstat.nii.gz
-mv task001_parametric_gain_vs_baseline.nii.gz zstat.nii.gz
 
 # make mask: make all values positive by taking square, next binarise (all > 0 becomes 1)
 fslmaths zstat.nii.gz -sqr -bin  zstat_mask.nii.gz
