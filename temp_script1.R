@@ -77,3 +77,10 @@ ex_inds <- ex_inds * 2
 
 plot3d(ex_inds[ex_inds[, 1] <= 0, ], aspect = FALSE, size= 3)
 plot3d(mask_inds[mask_inds[, 1] <= 0, ], aspect = FALSE, add = TRUE, col = "green")
+
+
+####
+##  SEPARATE ROIS INTO CLUSTERS
+####
+
+cls <- get_cluster_inds(rois==1, 3)

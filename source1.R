@@ -44,3 +44,19 @@ get_outer_points <- function(a) {
   return(run_inds)
 }
 
+get_cluster_inds <- function(a, thres = 1e-2) {
+  raw_inds <- which(a, arr.ind = TRUE)
+  dd <- as.matrix(dist(raw_inds))
+  am <- (dd <= 2) + 0
+  for (i in 1:10) {
+    am <- am %*% am  
+    am <- (am > 0) + 0    
+  }
+  res <- eigen(am)
+  filt <- (abs(res$values) > thres)
+  sum(filt)
+  cls <- res$vectors[, filt]
+  cls <- abs(cls) > 1e-3
+  res <- apply(cls, 2, which)
+  lapply(res, function(v) raw_inds[v, , drop = FALSE])
+}
