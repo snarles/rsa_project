@@ -119,3 +119,33 @@ oro.nifti::writeNIfTI(rois2, "roi/rois")
 nff <- readNIfTI("roi/rois.nii.gz")
 nff
 table(nff)
+
+cl_inds <- which(nff >0, arr.ind = TRUE)
+cl_inds <- cbind(cl_inds, nff[nff > 0])
+cl_inds <- cl_inds[order(cl_inds[, 4]), ]
+View(cl_inds)
+saveRDS(cl_inds, "roi/cl_inds.rds")
+
+## BUILD TABLE
+
+ncls <- max(nff)
+sub <- sample(1:16, 1)
+run <- sample(1:3, 1)
+cope <- sample(1:16, 1)
+tabs <- list()
+
+for (sub in 1:16) {
+  for (run in 1:3) {
+    for (cope in 1:16) {
+      runn <- readNIfTI(get_fi(sub, run, cope))
+      temp <- c(sub, run, cope, runn[cl_inds[, -4]])
+      tabs <- c(tabs, list(temp))
+    }
+  }
+}
+tab <- do.call(rbind, tabs)
+dim(tab)
+cl_names <- apply(cl_inds[, c(4, 1:3)], 1, paste, collapse = ".")
+cl_names <- paste0("clus", cl_names)
+colnames(tab) <- c("sub", "run","cope", cl_names)
+View(tab)
