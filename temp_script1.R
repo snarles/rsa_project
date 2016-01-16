@@ -84,3 +84,38 @@ plot3d(mask_inds[mask_inds[, 1] <= 0, ], aspect = FALSE, add = TRUE, col = "gree
 ####
 
 cls <- get_cluster_inds(rois==1, 3)
+
+####
+##  APPLY ALIGNMENT TRANSFORM
+####
+cls2 <- lapply(cls, function(m)
+  t(3/2 * (t(m) - c(27, 32, 23)) + c(46, 55, 46)))
+
+####
+##  CREATE ROI FILTER
+####
+
+rois2 <- 0 * run1_1_1
+cube3 <- AlgDesign::gen.factorial(c(3, 3, 3))
+for (i in 1:length(cls2)) {
+  a <- cls2[[i]]
+  for (j in 1:dim(a)[1]) {
+    v <- floor(a[j, ])
+    cv <- t(t(cube3) + v)
+    rois2[cv] <- i
+  }
+}
+
+plot3d(get_outer_points(run1_1_1), aspect = FALSE, size= 1,
+       xlab = "X", ylab = "Y", zlab = "Z")
+for (i in 1:length(cls2)) {
+  plot3d(which(rois2 == i, arr.ind = TRUE), 
+         col = rainbow(length(cls2))[i], size = 3, add = TRUE)
+}
+
+help(writeNIfTI)
+oro.nifti::writeNIfTI(rois2, "roi/rois")
+
+nff <- readNIfTI("roi/rois.nii.gz")
+nff
+table(nff)
