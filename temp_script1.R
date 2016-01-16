@@ -124,6 +124,7 @@ cl_inds <- which(nff >0, arr.ind = TRUE)
 cl_inds <- cbind(cl_inds, nff[nff > 0])
 cl_inds <- cl_inds[order(cl_inds[, 4]), ]
 View(cl_inds)
+colnames(cl_inds) <- c("X", "Y", "Z", "clus")
 saveRDS(cl_inds, "roi/cl_inds.rds")
 
 ####
@@ -173,5 +174,5 @@ c(37. ,   6.5),
 c(37. ,  10.5),
 c(37. ,  14.5),
 c(37. ,  18.5))
-
+colnames(params) <- c("gain", "loss")
 saveRDS(params, "roi/params.rds")
