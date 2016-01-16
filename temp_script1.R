@@ -126,7 +126,9 @@ cl_inds <- cl_inds[order(cl_inds[, 4]), ]
 View(cl_inds)
 saveRDS(cl_inds, "roi/cl_inds.rds")
 
-## BUILD TABLE
+####
+## BUILD DATA TABLE
+####
 
 ncls <- max(nff)
 sub <- sample(1:16, 1)
@@ -148,4 +150,28 @@ dim(tab)
 cl_names <- apply(cl_inds[, c(4, 1:3)], 1, paste, collapse = ".")
 cl_names <- paste0("clus", cl_names)
 colnames(tab) <- c("sub", "run","cope", cl_names)
-View(tab)
+saveRDS(tab, "roi/data.rds")
+
+####
+## COVARIATES
+####
+
+params <- rbind(
+c(13. ,   6.5),
+c(13. ,  10.5),
+c(13. ,  14.5),
+c(13. ,  18.5),
+c(21. ,   6.5),
+c(21. ,  10.5),
+c(21. ,  14.5),
+c(21. ,  18.5),
+c(29. ,   6.5),
+c(29. ,  10.5),
+c(29. ,  14.5),
+c(29. ,  18.5),
+c(37. ,   6.5),
+c(37. ,  10.5),
+c(37. ,  14.5),
+c(37. ,  18.5))
+
+saveRDS(params, "roi/params.rds")
