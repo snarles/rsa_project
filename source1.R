@@ -13,28 +13,28 @@ get_fi <- function(sub, run, cope) {
 }
 
 # get outer points from an array (done by taking dimensionwise min elts)
-get_outer_points <- function(a) {
-  min_inds <- apply(a, c(1, 2), function(v) min(c(Inf, which(v > 0))))
+get_outer_points <- function(a, thres = 0) {
+  min_inds <- apply(a, c(1, 2), function(v) min(c(Inf, which(v > thres))))
   run_inds3a <- cbind(row(min_inds)[min_inds < Inf],
                     col(min_inds)[min_inds < Inf],
                     min_inds[min_inds < Inf])
-  min_inds <- apply(a, c(1, 3), function(v) min(c(Inf, which(v > 0))))
+  min_inds <- apply(a, c(1, 3), function(v) min(c(Inf, which(v > thres))))
   run_inds2a <- cbind(row(min_inds)[min_inds < Inf],
                       min_inds[min_inds < Inf],
                      col(min_inds)[min_inds < Inf])
-  min_inds <- apply(a, c(2, 3), function(v) min(c(Inf, which(v > 0))))
+  min_inds <- apply(a, c(2, 3), function(v) min(c(Inf, which(v > thres))))
   run_inds1a <- cbind(min_inds[min_inds < Inf],
                     row(min_inds)[min_inds < Inf],
                     col(min_inds)[min_inds < Inf])
-  min_inds <- apply(a, c(1, 2), function(v) max(c(-Inf, which(v > 0))))
+  min_inds <- apply(a, c(1, 2), function(v) max(c(-Inf, which(v > thres))))
   run_inds3b <- cbind(row(min_inds)[min_inds > -Inf],
                      col(min_inds)[min_inds > -Inf],
                      min_inds[min_inds > -Inf])
-  min_inds <- apply(a, c(1, 3), function(v) max(c(-Inf, which(v > 0))))
+  min_inds <- apply(a, c(1, 3), function(v) max(c(-Inf, which(v > thres))))
   run_inds2b <- cbind(row(min_inds)[min_inds > -Inf],
                       min_inds[min_inds > -Inf],
                      col(min_inds)[min_inds > -Inf])
-  min_inds <- apply(a, c(2, 3), function(v) max(c(-Inf, which(v > 0))))
+  min_inds <- apply(a, c(2, 3), function(v) max(c(-Inf, which(v > thres))))
   run_inds1b <- cbind(min_inds[min_inds > -Inf],
                      row(min_inds)[min_inds > -Inf],
                      col(min_inds)[min_inds > -Inf])

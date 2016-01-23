@@ -71,7 +71,7 @@ mask_inds <- which(roi_mask == 1, arr.ind = TRUE)
 mask_inds <- t(t(mask_inds) - c(27, 32, 23))
 mask_inds <- mask_inds * 3
 
-ex_inds <- get_outer_points(run1_1_1)
+ex_inds <- get_outer_points(run1_1_1, 0)
 ex_inds <- t(t(ex_inds) - c(46, 55, 46))
 ex_inds <- ex_inds * 2
 
