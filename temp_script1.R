@@ -124,8 +124,12 @@ cl_inds <- which(nff >0, arr.ind = TRUE)
 cl_inds <- cbind(cl_inds, nff[nff > 0])
 cl_inds <- cl_inds[order(cl_inds[, 4]), ]
 View(cl_inds)
+cl_names <- apply(cl_inds[, c(4, 1:3)], 1, paste, collapse = ".")
+cl_names <- paste0("clus", cl_names)
 colnames(cl_inds) <- c("X", "Y", "Z", "clus")
+rownames(cl_inds) <- cl_names
 saveRDS(cl_inds, "roi/cl_inds.rds")
+
 
 ####
 ## BUILD DATA TABLE
@@ -148,8 +152,7 @@ for (sub in 1:16) {
 }
 tab <- do.call(rbind, tabs)
 dim(tab)
-cl_names <- apply(cl_inds[, c(4, 1:3)], 1, paste, collapse = ".")
-cl_names <- paste0("clus", cl_names)
+
 colnames(tab) <- c("sub", "run","cope", cl_names)
 saveRDS(tab, "roi/data.rds")
 
