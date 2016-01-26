@@ -121,14 +121,50 @@ mean(av_scores)
 ##  Goal: reduce the voxel dimensionality, keeping the classification performance
 ####
 
-roi_ind <- 1
+cv_score_func <- function(av_trans, l2p) {
+  cv_scores <- numeric(3)
+  # test (1, 2, 3)
+  for (te_run in 1:3) {
+    te_inds <- (te_run - 1)* 16 + 1:16
+    X_tr <- repmat(params2, 2, 1)
+    X_te <- params2
+    Y_tr <- av_trans[-te_inds, ]
+    Y_te <- av_trans[te_inds, ]
+    
+    res <- identification_pipeline1(X_tr, Y_tr, X_te, Y_te, 1:16,  
+                                    forward_method = fit_ridge_kernel,
+                                    forward_params = list(lambda = l2p),
+                                    Sigma_e_method = residual_offdiag,
+                                    Sigma_e_params = list(shrink = 1),
+                                    backward_method = pre_mle,
+                                    scoring_method = resample_misclassification,
+                                    scoring_params = list(m = 2))
+    cv_scores[te_run] <- res$score
+  }
+  mean(cv_scores)  
+}
+
+###
+#  FIT THE MODEL
+###
+
+roi_ind <- 5
 roi_dat <- rdat[, cls[, "clus"] == roi_ind]
 av_all <- 1/16 * repmat(eye(48), 1, 16) %*% roi_dat
 dim(roi_dat)
 dim(av_all)
 av_all <- scale(av_all, TRUE, TRUE)
 params2 <- cbind(1, scale(params))
+res <- svd(av_all)
+av_trans <- res$u %*% diag(res$d)
 
-dim(av_all)
-View(av_all)
-image(as.matrix(dist(av_all)), col=grey(0:10/10))
+cv_score_func(av_all, 1e6)
+mcs <- numeric()
+for (i in 10:30) {
+  mcs[paste(i)] <- cv_score_func(av_trans[, 1:i], 1e6)
+}
+layout(matrix(1:2, 2, 1))
+plot(cumsum(res$d^2), type = "l")
+scatter.smooth(as.numeric(names(mcs)), mcs, xlim = c(1, 48))
+fit <- loess.smooth(as.numeric(names(mcs)), mcs)
+(k_chosen <- round(min.k <- fit$x[order(fit$y)[1]]))
