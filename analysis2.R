@@ -71,7 +71,7 @@ mean(colMeans(scores))
 ##  Average multiple subjects
 ####
 
-avgd_scores <- function(indiv_scale, quad_scale, l2p) {
+avgd_scores <- function(indiv_scale, l2p) {
   av_scores <- numeric(nrois)
   for (roi_ind in 1:nrois) { 
     roi_dat <- rdat[, cls[, "clus"] == roi_ind]
@@ -79,8 +79,7 @@ avgd_scores <- function(indiv_scale, quad_scale, l2p) {
     dim(roi_dat)
     dim(av_all)
     av_all <- scale(av_all, TRUE, TRUE)
-    params2 <- cbind(scale(params), quad_scale * scale(params^2), 
-                     quad_scale * scale(params[, 1] * params[, 2]),
+    params2 <- cbind(1, scale(params),
                      indiv_scale * eye(16))
     
     cv_scores <- numeric(3)
@@ -107,6 +106,29 @@ avgd_scores <- function(indiv_scale, quad_scale, l2p) {
   av_scores
 }
 
-av_scores <- avgd_scores(indiv_scale = 0, quad_scale= 1, l2p= 1e6)
+av_scores <- avgd_scores(indiv_scale = 0, l2p= 1e6)
 av_scores
 mean(av_scores)
+(valid_rois <- which(av_scores < .5))
+
+###
+#  Conclusion: linear model does best, no need for idiosyncratic factors
+###
+
+
+####
+##  SUFFICIENT DIMENSIONALITY REDUCTION
+##  Goal: reduce the voxel dimensionality, keeping the classification performance
+####
+
+roi_ind <- 1
+roi_dat <- rdat[, cls[, "clus"] == roi_ind]
+av_all <- 1/16 * repmat(eye(48), 1, 16) %*% roi_dat
+dim(roi_dat)
+dim(av_all)
+av_all <- scale(av_all, TRUE, TRUE)
+params2 <- cbind(1, scale(params))
+
+dim(av_all)
+View(av_all)
+image(as.matrix(dist(av_all)), col=grey(0:10/10))
