@@ -36,11 +36,18 @@ resid <- avg_dat - Yhat
 resid_ses <- apply(resid, 2, sd)
 hist(resid_ses)
 colnames(Ball) <- colnames(avg_dat)
+rownames(Ball) <- colnames(params2)
 Bscale <- t(t(Ball/resid_ses))
+Bscale <- Bscale[2:3, ]
 
 ####
 ##  Compute overall feature-distance matrix and roi-specific feature-distance matrices
 ####
 
-
+S_all <- (Bscale %*% t(Bscale))/dim(Bscale)[2]
+S_rois <- list()
+for (i in 1:nrois) {
+  Bsub <- Bscale[, cls[, "clus"] == i]
+  S_rois[[i]] <- (Bsub %*% t(Bsub))/dim(Bsub)[2]  
+}
 
