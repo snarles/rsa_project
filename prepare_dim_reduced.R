@@ -17,6 +17,23 @@ library(lineId)
 # avg_subjects = FALSE
 # stdz_params = TRUE
 
+
+####
+##  TODO
+##   * Make the code fully compatible with subsampling schemes
+##   * Implement methods for choosing # of PCA components
+####
+
+#' Arguments:
+#' @param dfile The file containing voxel data
+#' @param cfile File containing voxel XYZ indices and cluster index
+#' @param remove_bad there are some voxels with 0.00 (equivalent of NA?): remove them
+#' @param stdz_within Standardize within each subject?
+#' @param pca Replace voxels with principal coordinates?
+#' @param npca Number of pca components for each roi, single number if same for all rois
+#' @param avg_subjects Replace all subjects with one "averaged" subject
+#' @param stz_params Standardize the X matrix
+
 prepare_gambling_data <- function(dfile = 'roi/data.rds', cfile = 'roi/cl_inds.rds', remove_bad = TRUE,
                                   stdz_within = FALSE, pca = TRUE, npca = 10, avg_subjects = FALSE,
                                   stdz_params = TRUE) {
@@ -33,7 +50,7 @@ prepare_gambling_data <- function(dfile = 'roi/data.rds', cfile = 'roi/cl_inds.r
   hdat <- dat[, 1:3]
   nrois <- max(cls[, "clus"])
   sub_inds <- sort(unique(hdat[, "sub"]))
-  Xmat <- repmat(params, 1, 3)
+  Xmat <- params[hdat[, "cope"], ]
   if (stdz_within) {
     newdat <- list()
     for (sind in sub_inds) {
@@ -45,6 +62,7 @@ prepare_gambling_data <- function(dfile = 'roi/data.rds', cfile = 'roi/cl_inds.r
     rdat <- scale(rdat)
   }
   if (avg_subjects) {
+    ## INCOMPLETE -- this might not work crrectly if subjects are subsampled
     rdat <- 1/16 * repmat(eye(48), 1, 16) %*% rdat[, ]
     Xmat <- params
   }
@@ -65,7 +83,8 @@ prepare_gambling_data <- function(dfile = 'roi/data.rds', cfile = 'roi/cl_inds.r
     rdat <- do.call(cbind, newdat)
     cls <- cls2
   }
-  ans <- list(rdat = rdat, hdat = hdat, params = params, cls = cls, dat = cbind(hdat, rdat))
+  ans <- list(Ymat = rdat, hdat = hdat, params = params, cls = cls, dat = cbind(hdat, rdat),
+              Xmat = Xmat, nrois = nrois)
 
   ans
 }
