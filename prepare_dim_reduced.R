@@ -33,10 +33,11 @@ library(lineId)
 #' @param npca Number of pca components for each roi, single number if same for all rois
 #' @param avg_subjects Replace all subjects with one "averaged" subject
 #' @param stz_params Standardize the X matrix
+#' @param div_sqrt_p Normalize by number of voxels (so we can compare average distance matrices)
 
 prepare_gambling_data <- function(dfile = 'roi/data.rds', cfile = 'roi/cl_inds.rds', remove_bad = TRUE,
                                   stdz_within = FALSE, pca = TRUE, npca = 10, avg_subjects = FALSE,
-                                  stdz_params = TRUE) {
+                                  stdz_params = TRUE, div_sqrt_p = TRUE) {
   cls <- readRDS(cfile)
   params <- readRDS("roi/params.rds")
   if (stdz_params) params <- scale(params)
@@ -65,6 +66,14 @@ prepare_gambling_data <- function(dfile = 'roi/data.rds', cfile = 'roi/cl_inds.r
     ## INCOMPLETE -- this might not work crrectly if subjects are subsampled
     rdat <- 1/16 * repmat(eye(48), 1, 16) %*% rdat[, ]
     Xmat <- params
+  }
+  if (div_sqrt_p) {
+    newdat <- list()
+    for (rind in 1:nrois) {
+      roi_dat <- rdat[, cls[, "clus"] == rind]
+      newdat[[paste0("roi", rind)]] <- rdat/sqrt(dim(rdat)[2])
+    }
+    rdat <- do.call(cbind, newdat)
   }
   if (pca) {
     newdat <- list()
