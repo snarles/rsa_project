@@ -33,8 +33,8 @@ sample_moments <- function(res) {
   p <- res$p; q <- res$q; dat <- res$dat
   rawX <- dat[dat[,1] == 0, -1, drop = FALSE]
   rawY <- dat[dat[,1] == 1, -1, drop = FALSE]
-  Xc <- rawX[, 1:p]
-  Xr <- rawX[, -(1:p)]
+  Xc <- rawX[, 1:q]
+  Xr <- rawX[, -(1:q)]
   Yc <- rawY[, 1:q]
   Yr <- rawY[, -(1:q)]
   Ahat <- t(solve(t(Xc) %*% Xc, t(Xc) %*% Xr))
@@ -117,8 +117,8 @@ boot_sampler <- function(res) {
     if (nX == 0 & nY == 0) {
       return(list(p = p, q = q, dat = dat0))
     }
-    newX <- rawX[sample(nX, nX, TRUE), , drop = FALSE]
-    newY <- rawY[sample(nY, nY, TRUE), , drop = FALSE]
+    newX <- rawX[sample(nX0, nX, TRUE), , drop = FALSE]
+    newY <- rawY[sample(nY0, nY, TRUE), , drop = FALSE]
     dat <- rbind(cbind(0, newX), cbind(1, newY))
     list(p = p, q = q, dat = dat)
   }
@@ -136,7 +136,7 @@ inv_alpha_bca <- function(alpha_bca, z0, acc) {
   )
 }
 
-inverse_bca_test <- function(res, theta, mc.reps = 1000) {
+inverse_bca_test <- function(res, nX, nY, theta, mc.reps = 1000) {
   jj <- jackknife(res, theta)
   acc <- jj$skew/6
   boot_s1 <- boot_sampler(res)
