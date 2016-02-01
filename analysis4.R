@@ -12,7 +12,7 @@ q <- 2
 res <- prepare_gambling_data(dfile = "roi/data.rds",                             
 ##res <- prepare_gambling_data(dfile = "doppel/doppel0.rds",
   stdz_within = FALSE, npca = npca, avg_subjects = FALSE,
-                             div_sqrt_p = FALSE)
+                             div_sqrt_p = TRUE)
 zattach(res)
 n <- dim(Ymat)[1]
 rdat <- Ymat
