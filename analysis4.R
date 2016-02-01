@@ -9,12 +9,13 @@ source("rsa_boot_source.R")
 npca <- 10
 p <- npca
 q <- 2
-##res <- prepare_gambling_data(dfile = "roi/data.rds",                             
-res <- prepare_gambling_data(dfile = "doppel/doppel0.rds",
-  stdz_within = TRUE, npca = npca, avg_subjects = FALSE,
-                             div_sqrt_p = FALSE)
+res <- prepare_gambling_data(dfile = "roi/data.rds",                             
+##res <- prepare_gambling_data(dfile = "doppel/doppel0.rds",
+  stdz_within = FALSE, npca = npca, avg_subjects = FALSE,
+                             div_sqrt_p = TRUE)
 zattach(res)
 n <- dim(Ymat)[1]
+rdat <- Ymat
 
 pvals <- matrix(-1, 28, 28)
 r1 <- 1; r2 <- 2

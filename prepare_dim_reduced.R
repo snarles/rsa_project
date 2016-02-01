@@ -59,9 +59,8 @@ prepare_gambling_data <- function(dfile = 'roi/data.rds', cfile = 'roi/cl_inds.r
       newdat[[paste0("S", sind)]] <- scale(subdat)
     }
     rdat <- do.call(rbind, newdat)
-  } else {
-    rdat <- scale(rdat)
   }
+  rdat <- scale(rdat)
   if (avg_subjects) {
     ## INCOMPLETE -- this might not work crrectly if subjects are subsampled
     rdat <- 1/16 * repmat(eye(48), 1, 16) %*% rdat[, ]
