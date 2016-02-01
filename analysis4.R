@@ -28,6 +28,6 @@ for (r1 in 1:(nrois - 1)) {
     t1 <- proc.time()
     test_res <- inverse_bca_test(res, n, n, stat.S, mc.reps = 1000)
     proc.time() - t1
-    pvals[r1, r2] <- test_res
+    (pvals[r1, r2] <- test_res)
   }
 }
