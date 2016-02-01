@@ -83,12 +83,14 @@ prepare_gambling_data <- function(dfile = 'roi/data.rds', cfile = 'roi/cl_inds.r
       np <- npca[rind]
       roi_dat <- rdat[, cls[, "clus"] == rind]
       res <- svd(roi_dat)
-      newdat[[paste0("roi", rind)]] <- res$u %*% diag(res$d)
+      newY <- res$u %*% diag(res$d)
+      newdat[[paste0("roi", rind)]] <- newY[, 1:np]
       temp <- cbind(NA, NA, NA, rep(rind, np))
       rownames(temp) <- paste0("clus1.PC", 1:np)
       cls2 <- rbind(cls2, temp)
     }
     rdat <- do.call(cbind, newdat)
+    colnames(rdat) <- rownames(cls2)
     cls <- cls2
   }
   ans <- list(Ymat = rdat, hdat = hdat, params = params, cls = cls, dat = cbind(hdat, rdat),

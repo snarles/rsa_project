@@ -12,11 +12,24 @@ imp0 <- function(v) {
   v[is.na(v)] <- sample(v[!is.na(v)], sum(is.na(v)), TRUE)
   v }
 
-dat <- readRDS("roi/data.rds")
-rdat <- dat[, -(1:3)]
-zpattern <- (rdat == 0)
-rdat[zpattern] <- NA
-rdat <- apply(rdat, 2, imp0)
+cls <- readRDS("roi/cl_inds.rds")
+cl_sizes <- table(cls[, "clus"])
+
+
+source("prepare_dim_reduced.R")
+source("rsa_boot_source.R")
+
+
+npca <- 10
+p <- npca
+q <- 2
+res <- prepare_gambling_data(dfile = "roi/data.rds",                   
+                             ##res <- prepare_gambling_data(dfile = "doppel/doppel0.rds",
+                             stdz_within = FALSE, npca = npca, avg_subjects = FALSE,
+                             div_sqrt_p = FALSE)
+rdat <- res$Ymat
+dim(rdat)
+
 
 mu.c <- colMeans(rdat)
 mu.r <- rowMeans(rdat)
