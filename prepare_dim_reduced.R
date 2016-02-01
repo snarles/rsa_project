@@ -16,7 +16,7 @@ library(lineId)
 # npca = 10
 # avg_subjects = FALSE
 # stdz_params = TRUE
-
+# div_sqrt_p = TRUE
 
 ####
 ##  TODO
