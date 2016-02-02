@@ -1,5 +1,8 @@
 ####
 ##  MULTIPLE MDS EXPERIMENTS
+##   minimize (over x, Sigma^k) given data D^k
+##   sum_ijk |(x_i - x_j)' Sigma^k (x_i - x_j) - D_ik^k|^2
+##   restrict Sigma^k to be diagonal
 ####
 
 
