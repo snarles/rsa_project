@@ -8,6 +8,7 @@ sqrt2 <- function(v) sqrt(pmax(v, 0))
 
 #' @param dists Squared euclidean distances
 indscal_routine <- function(dists, p = 2) {
+  n <- dim(dists[[1]])[1]
   k <- length(dists)
   of <- function(x, ds, dists) {
     nms <- lapply(1:k, function(i) colSums(t(x^2) * ds[i, ]))
