@@ -24,6 +24,11 @@ dists <- lapply(1:k, function(i) {
   repmat(v, n, 1) + repmat(t(v), 1, n) - 2 * ips[[i]]
 })
 
+source("indscal_source.R")
+res <- indscal_routine(dists)
+res$of(x[, 1:2], ds[, 1:2], dists)
+res$minimum
+
 c(dists[[2]][5, 4], t(x[4, ] - x[5, ]) %*% diag(ds[2, ]) %*% (x[4, ] - x[5, ]))
 
 ####
