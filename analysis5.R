@@ -53,8 +53,11 @@ for (i in 1:nrois) {
 ####
 
 res <- indscal_routine(S_rois, p=2)
-cbind(res$xhat, params)
+plot(res$dshat)
+plot(res$xhat)
 resp <- procrustes(params, res$xhat)
+plot(resp)
+resp <- procrustes(res$xhat, params)
 plot(resp)
 
 summary(lm(res$xhat[, 1] ~ params))
