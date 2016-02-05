@@ -47,10 +47,7 @@ of <- function(x, ds, dists) {
   sum(diffs)
 }
 
-of(x, ds, dists)
-of(x[, 1:2], ds[, 1:2], dists)
-of(xhat, ds_hat, dists)
-of(0 * xhat,0 * ds_hat, dists)
+
 
 
 of_conv <- function(xx) {
@@ -60,11 +57,11 @@ of_conv <- function(xx) {
   of(x, ds, dists)
 }
 
-res <- nlm(of_conv, as.numeric(rbind(xhat, ds_hat)))
-res$minimum
+res_rnd <- nlm(of_conv, as.numeric(rbind(xhat, ds_hat)))
+res_rnd$minimum
 
-res <- nlm(of_conv, as.numeric(rbind(x[, 1:2], ds[, 1:2])))
-res$minimum
+res_cht <- nlm(of_conv, as.numeric(rbind(x[, 1:2], ds[, 1:2])))
+res_cht$minimum
 
 sqrt2 <- function(v) sqrt(pmax(v, 0))
 dists2 <- lapply(dists, sqrt2)
@@ -79,25 +76,14 @@ of(res$gspace, dshat, dists)
 lala <- nlm(of_conv, as.numeric(rbind(res$gspace, dshat)))
 lala$minimum
 
-k <- 3; i <- 3; j <- 5
-as.matrix(res$dhat[[k]])[i, j]
-as.matrix(res$confdiss[[k]])[i, j]
-sqrt(t(res$gspace[i, ] - res$gspace[j, ]) %*% 
-  res$cweights[[k]] %*% 
-  (res$gspace[i, ] - res$gspace[j, ]))
-sqrt(t(res$gspace[i, ] - res$gspace[j, ]) %*% 
-  res$cweights[[k]]^2 %*% 
-  (res$gspace[i, ] - res$gspace[j, ]))
-sqrt(t(res$conf[[k]][i, ] - res$conf[[k]][j, ]) %*% 
-  (res$conf[[k]][i, ] - res$conf[[k]][j, ]))
-sqrt(t(res$conf[[k]][i, ] - res$conf[[k]][j, ]) %*% 
-  res$cweights[[k]] %*% 
-  (res$conf[[k]][i, ] - res$conf[[k]][j, ]))
-sqrt(t(res$conf[[k]][i, ] - res$conf[[k]][j, ]) %*% 
-  res$cweights[[k]]^2 %*% 
-  (res$conf[[k]][i, ] - res$conf[[k]][j, ]))
+## RESULTS
 
-dists[[k]][i, j]
+of(x, ds, dists)
+of(x[, 1:2], ds[, 1:2], dists)
+of(xhat, ds_hat, dists)
+of(0 * xhat,0 * ds_hat, dists)
+of(res$gspace, dshat, dists)
 
-plot(as.matrix(res$dhat[[k]]), dists2[[k]])
-plot(as.matrix(res$dhat[[k]]), as.matrix(res$confdiss[[k]]))
+res_rnd$minimum
+res_cht$minimum
+lala$minimum
