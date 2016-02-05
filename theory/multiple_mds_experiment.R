@@ -8,6 +8,7 @@
 
 
 library(pracma)
+library(smacof)
 n <- 20
 p <- 10
 x <- randn(n, p)
@@ -49,6 +50,8 @@ of <- function(x, ds, dists) {
 of(x, ds, dists)
 of(x[, 1:2], ds[, 1:2], dists)
 of(xhat, ds_hat, dists)
+of(0 * xhat,0 * ds_hat, dists)
+
 
 of_conv <- function(xx) {
   xx <- matrix(xx, n + k, p)
@@ -63,3 +66,38 @@ res$minimum
 res <- nlm(of_conv, as.numeric(rbind(x[, 1:2], ds[, 1:2])))
 res$minimum
 
+sqrt2 <- function(v) sqrt(pmax(v, 0))
+dists2 <- lapply(dists, sqrt2)
+
+res <- indscal(dists2, ndim=2, type="ratio", verbose=TRUE)
+ratios <- sapply(1:length(dists), function(i) {
+  median(as.numeric(as.matrix(res$dhat[[i]])/dists2[[i]]), na.rm=TRUE)
+})
+names(res)
+dshat <- do.call(rbind, lapply(res$cweights, diag))^2/ratios^2
+of(res$gspace, dshat, dists)
+lala <- nlm(of_conv, as.numeric(rbind(res$gspace, dshat)))
+lala$minimum
+
+k <- 3; i <- 3; j <- 5
+as.matrix(res$dhat[[k]])[i, j]
+as.matrix(res$confdiss[[k]])[i, j]
+sqrt(t(res$gspace[i, ] - res$gspace[j, ]) %*% 
+  res$cweights[[k]] %*% 
+  (res$gspace[i, ] - res$gspace[j, ]))
+sqrt(t(res$gspace[i, ] - res$gspace[j, ]) %*% 
+  res$cweights[[k]]^2 %*% 
+  (res$gspace[i, ] - res$gspace[j, ]))
+sqrt(t(res$conf[[k]][i, ] - res$conf[[k]][j, ]) %*% 
+  (res$conf[[k]][i, ] - res$conf[[k]][j, ]))
+sqrt(t(res$conf[[k]][i, ] - res$conf[[k]][j, ]) %*% 
+  res$cweights[[k]] %*% 
+  (res$conf[[k]][i, ] - res$conf[[k]][j, ]))
+sqrt(t(res$conf[[k]][i, ] - res$conf[[k]][j, ]) %*% 
+  res$cweights[[k]]^2 %*% 
+  (res$conf[[k]][i, ] - res$conf[[k]][j, ]))
+
+dists[[k]][i, j]
+
+plot(as.matrix(res$dhat[[k]]), dists2[[k]])
+plot(as.matrix(res$dhat[[k]]), as.matrix(res$confdiss[[k]]))
