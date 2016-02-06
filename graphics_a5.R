@@ -84,14 +84,18 @@ for (roi_ind in 1:28) {
   newparams <- t(
     t(params %*% resp$rotation * resp$scale) + 
       as.numeric(resp$translation))
-  x0 <- newparams
-  x0 <- dist_flow(x0, delta, eps = 1e-3, nits = nits, plot = FALSE)
-  x1 <- x0 %*% t(resp$rotation)
-  pdf(paste0("temp_plots/roi_dist_", roi_ind, ".pdf"))
-  plot(x1)
-  for (pp in apply(pairz, 1, list)) {
-    lines(x1[pp[[1]], ])
+  png(paste0("temp_plots/roi_dist_", roi_ind, ".png"))  
+  layout(matrix(c(1,3, 2, 4), 2, 2))
+  for (i in 1:4) {
+    x0 <- newparams    
+    x0 <- dist_flow(x0, delta, eps = 1e-3, nits = i * nits, plot = FALSE)
+    x1 <- x0 %*% t(resp$rotation)
+    plot(x1)
+    for (pp in apply(pairz, 1, list)) {
+      lines(x1[pp[[1]], ])
+    }
+    title(paste("ROI", roi_ind, "nits = ", i * nits))
   }
-  title(paste("ROI", roi_ind, "nits = ", nits))
   dev.off()
 }
+
