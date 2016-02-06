@@ -7,7 +7,7 @@ library(smacof)
 sqrt2 <- function(v) sqrt(pmax(v, 0))
 
 #' @param dists Squared euclidean distances
-indscal_routine <- function(dists, p = 2) {
+indscal_routine <- function(dists, p = 2, ...) {
   n <- dim(dists[[1]])[1]
   k <- length(dists)
   of <- function(x, ds, dists) {
@@ -29,7 +29,7 @@ indscal_routine <- function(dists, p = 2) {
   }
   
   dists2 <- lapply(dists, sqrt2)
-  res <- indscal(dists2, ndim = p , type="ratio", verbose=FALSE)
+  res <- indscal(dists2, ndim = p , type="ratio", ...)
   ratios <- sapply(1:length(dists), function(i) {
     median(as.numeric(as.matrix(res$dhat[[i]])/dists2[[i]]), na.rm=TRUE)
   })

@@ -21,6 +21,41 @@ hdat <- dat[, 1:3]
 nrois <- max(cls[, "clus"])
 
 ####
+##  Functions
+####
+get_bscale <- function(Xmat, Ymat, lambda = 1e-3) {
+  Ball <- fit_ridge_kernel(Xmat, Ymat, lambda=lambda)
+  Yhat <- Xmat %*% Ball
+  dim(Yhat)
+  resid <- Ymat - Yhat
+  resid_ses <- apply(resid, 2, sd)
+  #hist(resid_ses)
+  colnames(Ball) <- colnames(Ymat)
+  Bscale <- t(t(Ball/resid_ses))  
+}
+
+get_bootstrap_mats <- function(replace = TRUE) {
+  n <- dim(rdat)[1]
+  inds <- sample(n, n, replace = replace)
+  Ymat <- rdat[inds, ]
+  temp <- hdat[inds, ]
+  Xmat <- eye(16)[temp[, "cope"], ]
+  list(Xmat = Xmat, Ymat = Ymat)
+}
+
+get_S_all <- function(Bscale)
+  S_all <- as.matrix(dist(Bscale))/dim(Bscale)[2]
+
+get_S_rois <- function(Bscale) {
+  S_rois <- list()
+  for (i in 1:nrois) {
+    Bsub <- Bscale[, cls[, "clus"] == i]
+    S_rois[[i]] <- as.matrix(dist(Bsub))/dim(Bsub)[2]  
+  }
+  S_rois
+}
+
+####
 ##  Average multiple subjects
 ####
 
@@ -28,25 +63,16 @@ avg_dat <- 1/16 * repmat(eye(48), 1, 16) %*% rdat[, ]
 dim(avg_dat) # [1]   48 5082
 avg_dat <- scale(avg_dat)
 Xmat <- repmat(eye(16), 3, 1)
-Ball <- fit_ridge_kernel(Xmat, avg_dat, lambda = 0.001)
-Yhat <- Xmat %*% Ball      
-dim(Yhat)
-resid <- avg_dat - Yhat
-resid_ses <- apply(resid, 2, sd)
-hist(resid_ses)
-colnames(Ball) <- colnames(avg_dat)
-Bscale <- t(t(Ball/resid_ses))
+Bscale <- get_bscale(Xmat, avg_dat)
+S_rois <- get_S_rois(Bscale)
 
 ####
-##  Compute overall feature-distance matrix and roi-specific feature-distance matrices
+##  Bootstrap results
 ####
 
-S_all <- (Bscale %*% t(Bscale))/dim(Bscale)[2]
-S_rois <- list()
-for (i in 1:nrois) {
-  Bsub <- Bscale[, cls[, "clus"] == i]
-  S_rois[[i]] <- (Bsub %*% t(Bsub))/dim(Bsub)[2]  
-}
+zattach(get_bootstrap_mats())
+Bscale <- get_bscale(Xmat, Ymat)
+S_rois <- get_S_rois(Bscale)
 
 ####
 ##  Apply indscal
@@ -62,3 +88,23 @@ plot(resp)
 
 summary(lm(res$xhat[, 1] ~ params))
 summary(lm(res$xhat[, 2] ~ params))
+
+####
+##  A look at the variability
+####
+
+layout(matrix(1:4, 2, 2))
+for (i in 1:4) {
+  zattach(get_bootstrap_mats())
+  ##zattach(get_bootstrap_mats(FALSE))
+  Bscale <- get_bscale(Xmat, Ymat)
+  S_rois <- get_S_rois(Bscale)
+  res <- indscal_routine(S_rois, p=2, verbose = TRUE, itmax = 4000)
+  resp <- procrustes(params, res$xhat)
+  resp
+  plot(resp)
+}
+layout(1)
+
+plot(procrustes(params, randn(16, 2)))
+procrustes(params, randn(16, 2))
