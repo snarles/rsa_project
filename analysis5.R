@@ -59,12 +59,10 @@ get_S_rois <- function(Bscale) {
 ##  Average multiple subjects
 ####
 
-avg_dat <- 1/16 * repmat(eye(48), 1, 16) %*% rdat[, ]
-dim(avg_dat) # [1]   48 5082
-avg_dat <- scale(avg_dat)
-Xmat <- repmat(eye(16), 3, 1)
-Bscale <- get_bscale(Xmat, avg_dat)
+zattach(get_bootstrap_mats(FALSE))
+Bscale <- get_bscale(Xmat, Ymat)
 S_rois <- get_S_rois(Bscale)
+
 
 ####
 ##  Bootstrap results
