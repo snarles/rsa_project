@@ -42,7 +42,9 @@ plot(as.matrix(dist(newparams)), delta)
 plot(params)
 
 dist_flow <- function(x0, delta, eps = 1e-2, nits = 100, plot = FALSE) {
-  if (plot) plot(3 * x0, col = "white"); points(x0)
+  if (plot) {
+    plot(3 * x0, col = "white"); points(x0)
+  }
   n <- dim(delta)[1]
   p <- dim(x0)[2]  
   of <- function(x) {
@@ -72,6 +74,7 @@ for (pp in apply(pairz, 1, list)) {
 ##  Do this for all rois
 ####
 
+nits <- 20
 for (roi_ind in 1:28) {
   delta <- S_rois[[roi_ind]]
   res <- mds(delta, ndim=15)
@@ -82,10 +85,13 @@ for (roi_ind in 1:28) {
     t(params %*% resp$rotation * resp$scale) + 
       as.numeric(resp$translation))
   x0 <- newparams
-  x0 <- dist_flow(x0, delta, eps = 1e-3, nits = 10, plot = TRUE)
+  x0 <- dist_flow(x0, delta, eps = 1e-3, nits = nits, plot = FALSE)
   x1 <- x0 %*% t(resp$rotation)
+  pdf(paste0("temp_plots/roi_dist_", roi_ind, ".pdf"))
   plot(x1)
   for (pp in apply(pairz, 1, list)) {
     lines(x1[pp[[1]], ])
   }
+  title(paste("ROI", roi_ind, "nits = ", nits))
+  dev.off()
 }
