@@ -3,22 +3,18 @@
 ##  compute separate ROI distance matrices, then apply INDSCALE
 ####
 
+source("prepare_dim_reduced.R")
 source("indscal_source.R")
 library(pracma)
 library(lineId)
 library(vegan)
-cls <- readRDS("roi/cl_inds.rds")
-params <- readRDS("roi/params.rds")
-dat <- readRDS("roi/data.rds")
 
-## delete bad voxels
-goodvox <- which(colSums(dat == 0) == 0)
-cls <- cls[names(goodvox)[-(1:3)], ]
-dat <- dat[, goodvox]
-
-rdat <- dat[, -(1:3)]
-hdat <- dat[, 1:3]
-nrois <- max(cls[, "clus"])
+res <- prepare_gambling_data(dfile = "roi/data.rds",                             
+                             ##res <- prepare_gambling_data(dfile = "doppel/doppel0.rds",
+                             stdz_within = FALSE, pca = FALSE, avg_subjects = FALSE,
+                             div_sqrt_p = FALSE)
+zattach(res)
+rdat <- Ymat
 
 ####
 ##  Functions
@@ -76,12 +72,13 @@ S_rois <- get_S_rois(Bscale)
 ##  Apply indscal
 ####
 
-res <- indscal_routine(S_rois, p=2)
+res <- indscal_routine(S_rois, p=2, itmax = 4000)
 plot(res$dshat)
 plot(res$xhat)
-resp <- procrustes(params, res$xhat)
+resp <- vegan::procrustes(params, res$xhat)
+resp
 plot(resp)
-resp <- procrustes(res$xhat, params)
+resp <- vegan::procrustes(res$xhat, params)
 plot(resp)
 
 summary(lm(res$xhat[, 1] ~ params))
@@ -98,11 +95,11 @@ for (i in 1:4) {
   Bscale <- get_bscale(Xmat, Ymat)
   S_rois <- get_S_rois(Bscale)
   res <- indscal_routine(S_rois, p=2, verbose = TRUE, itmax = 4000)
-  resp <- procrustes(params, res$xhat)
+  resp <- vegan::procrustes(params, res$xhat)
   resp
   plot(resp)
 }
 layout(1)
 
 plot(procrustes(params, randn(16, 2)))
-procrustes(params, randn(16, 2))
+vegan::procrustes(params, randn(16, 2))

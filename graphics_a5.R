@@ -16,7 +16,7 @@ delta <- dist0
 res <- mds(delta, ndim=15)
 xhat <- res$conf[, 1:2]
 delta <- as.matrix(dist(res$conf))
-resp <- procrustes(xhat, params)
+resp <- vegan::procrustes(xhat, params)
 resp
 plot(resp)
 names(resp)
@@ -80,7 +80,7 @@ for (roi_ind in 1:28) {
   res <- mds(delta, ndim=15)
   xhat <- res$conf[, 1:2]
   delta <- as.matrix(dist(res$conf))
-  resp <- procrustes(xhat, params)
+  resp <- vegan::procrustes(xhat, params)
   newparams <- t(
     t(params %*% resp$rotation * resp$scale) + 
       as.numeric(resp$translation))
