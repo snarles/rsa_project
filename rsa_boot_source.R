@@ -39,7 +39,17 @@ sample_moments <- function(res) {
   Yr <- rawY[, -(1:q)]
   Ahat <- t(solve(t(Xc) %*% Xc, t(Xc) %*% Xr))
   Bhat <- t(solve(t(Yc) %*% Yc, t(Yc) %*% Yr))
-  list(Ahat = Ahat, Bhat = Bhat)
+  Xrhat <- Xc %*% t(Ahat)
+  Yrhat <- Yc %*% t(Bhat)
+  Xinv <- solve(t(Xc) %*% Xc)
+  Yinv <- solve(t(Yc) %*% Yc)
+  Xresid <- Xr - Xrhat
+  Yresid <- Yr - Yrhat
+  XresD <- apply(Xresid, 2, var)
+  YresD <- apply(Yresid, 2, var)
+  M_A <- t(Ahat) %*% Ahat - Xinv * sum(XresD)
+  M_B <- t(Bhat) %*% Bhat - Yinv * sum(YresD)
+  list(Ahat = Ahat, Bhat = Bhat, M_A = M_A, M_B = M_B)
 }
 
 ## TEST STATISTICS
@@ -55,6 +65,13 @@ stat.T <- function(res) {
 stat.S <- function(res) {
   mus <- sample_moments(res)
   stat.S.raw <- t(mus$Ahat) %*% mus$Ahat - t(mus$Bhat) %*% mus$Bhat
+  as.numeric(stat.S.raw)
+}
+
+## unbiased
+stat.Su <- function(res) {
+  mus <- sample_moments(res)
+  stat.S.raw <- mus$M_A - mus$M_B
   as.numeric(stat.S.raw)
 }
 
