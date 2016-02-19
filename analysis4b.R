@@ -34,3 +34,5 @@ for (r1 in 1:(nrois - 1)) {
     (pvals[r1, r2] <- test_res)
   }
 }
+
+saveRDS(pvals, "a4bres.rds")
