@@ -29,6 +29,13 @@ Y_B <- Ymat[, cls[, "clus"] == r2]
 X_A <- Xmat
 X_B <- Xmat
 composite <- rbind(cbind(0, X_A, Y_A), cbind(1, X_B, Y_B))
-res <- list(p = p, q  = q, dat = composite, blksX = blks, blksY = blks)
-nX <- n; nY <- n
-test_res <- inverse_bca_test(res, n, n, stat.Su, mc.reps = 1000)
+res <- list(p = p, q  = q, dat = composite, blksX = blks, blksY = blks, 
+            subsX = hdat[, "sub"], subsY = hdat[, "sub"])
+
+b1 <- boot_sampler(res)
+newres <- b1()
+View(newres$dat)
+sm0 <- sample_moments(res)
+smB <- sample_moments(newres)
+inverse_bca_test(res, n, n, stat.Su, mc.reps = 1000)
+
