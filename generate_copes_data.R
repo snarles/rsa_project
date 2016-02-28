@@ -4,6 +4,7 @@
 ####
 
 library(pracma)
+library(MASS)
 
 rorthog <- function(n) svd(randn(n))$u
 
@@ -24,7 +25,7 @@ generate_copes_params <- function(nrepeats = 3,
                                 npca = 3, mixture_param = 0,
                                 Wishart_mult = 2, Wishart_scaling = 100,
                                 shared_coeffs = 1, shared_Sigmas = 1,
-                                Sigma_dependence = 0, seed = NULL
+                                Sigma_dependence = 0, seed = NULL, ...
                                 ) {
   if (!is.null(seed)) set.seed(seed)
   p <- nrois * npca
@@ -60,6 +61,8 @@ generate_copes_params <- function(nrepeats = 3,
   for (i in 1:(nsubjects + 1)) {
     Sigmas_true[[i]] <- cov(randn(Wishart_mult * p, p)) * roi_mask * 
       (rgamma(1, shape = Wishart_scaling)/Wishart_scaling)
+    colnames(Sigmas_true[[i]]) <- rownames(cls)
+    rownames(Sigmas_true[[i]]) <- rownames(cls)
   }
   for (i in 2:(nsubjects + 1)) 
     Sigmas_true[[i]] <- shared_Sigmas * Sigmas_true[[1]] + (1-shared_Sigmas) * Sigmas_true[[i]]
@@ -71,4 +74,28 @@ generate_copes_params <- function(nrepeats = 3,
        coeffs_true = coeffs_true, Sigmas_true = Sigmas_true)
 }
 
+generate_copes_data <- function(nrepeats, nsubjects, ncopes, params, coeffs_true, cls,
+                                Sigmas_true, ...) {
+  ansY <- list()
+  p <- dim(coeffs_true[[1]])[2]
+  Xindiv <- repmat(params, nrepeats, 1)
+  hdat <- cbind(sub = rep(1:nsubjects, each = ncopes * nrepeats),
+                run = rep(rep(1:nrepeats, each = ncopes), nsubjects),
+                cope = rep(1:ncopes, nrepeats * nsubjects))
+  for (ii in 1:nsubjects) {
+    noise <- mvrnorm(ncopes * nrepeats, rep(0, p), Sigmas_true[[ii]])
+    mu <- Xindiv %*% coeffs_true[[ii]]
+    ansY[[ii]] <- mu + noise
+  }
+  Ymat <- do.call(rbind, ansY)
+  Xmat <- repmat(Xindiv, nsubjects, 1)
+  list(Ymat = Ymat, Xmat = Xmat, hdat = hdat, cls = cls, nrois = nrois,
+       params = params, dat = cbind(hdat, Ymat), 
+       coeffs_true = coeffs_true, Sigmas_true = Sigmas_true)
+}
+
 lineId::zattach(formals(generate_copes_params))
+paramz <- generate_copes_params()
+lala <- do.call(generate_copes_data, paramz)
+names(lala)
+zattach(lala)

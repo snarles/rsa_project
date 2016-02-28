@@ -31,11 +31,12 @@ for (r1 in 1:(nrois - 1)) {
     res <- list(p = p, q  = q, dat = composite, blksX = blks, blksY = blks, 
               subsX = hdat[, "sub"], subsY = hdat[, "sub"])
     
-    b1 <- boot_sampler(res)
-    newres <- b1()
-    sm0 <- sample_moments(res)
-    smB <- sample_moments(newres)
-    pvals[r1, r2] <- inverse_bca_test(res, n, n, stat.Su, mc.reps = 1000)
+    # b1 <- boot_sampler(res)
+    # newres <- b1()
+    # sm0 <- sample_moments(res)
+    # smB <- sample_moments(newres)
+    (pv <- inverse_bca_test(res, n, n, stat.Su, mc.reps = 1000))
+    pvals[r1, r2] <- pv
 }}
 
 saveRDS(pvals, "a6res.rds")
