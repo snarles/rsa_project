@@ -89,13 +89,13 @@ generate_copes_data <- function(nrepeats, nsubjects, ncopes, params, coeffs_true
   }
   Ymat <- do.call(rbind, ansY)
   Xmat <- repmat(Xindiv, nsubjects, 1)
-  list(Ymat = Ymat, Xmat = Xmat, hdat = hdat, cls = cls, nrois = nrois,
+  list(Ymat = Ymat, Xmat = Xmat, hdat = hdat, cls = cls,
        params = params, dat = cbind(hdat, Ymat), 
        coeffs_true = coeffs_true, Sigmas_true = Sigmas_true)
 }
 
-lineId::zattach(formals(generate_copes_params))
-paramz <- generate_copes_params()
-lala <- do.call(generate_copes_data, paramz)
-names(lala)
-zattach(lala)
+# lineId::zattach(formals(generate_copes_params))
+# paramz <- generate_copes_params()
+# lala <- do.call(generate_copes_data, paramz)
+# names(lala)
+# zattach(lala)
