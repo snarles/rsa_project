@@ -19,6 +19,7 @@ Analysis of gambling fmri data
  * `analysis5.R` first use of Procrustes
  * `analysis4b.R` update analysis4 by using unbiased test stat
  * `analysis6.R` contrast with analysis 4: pool subjects first then compute test stat
+ * `analysis7.R` apply T-test to distance matrices
  * `fun_plot.R` cool 3d plot! totally unrelated to the project though...
  * `graphics_a5.R` Plots which try to align MDS distance matrices to the natural parameter distance grid. (Hard to explain..)
  * `indscal_source.R` Find latent parameterizations from distances (when you don't have parametrically generated stimuli...)
