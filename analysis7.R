@@ -42,3 +42,4 @@ image(fliplr(pvals[, , 1] < 0.05))
 image(fliplr(pvals[, , 2] < 0.05))
 image(fliplr(pvals[, , 3] < 0.05))
 
+saveRDS(pvals, "a7res.rds")
