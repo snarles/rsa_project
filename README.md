@@ -18,8 +18,11 @@ Analysis of gambling fmri data
  * `analysis4.R` first time we applied bootstrap to get p-values for metric equivalence
  * `analysis5.R` first use of Procrustes
  * `analysis4b.R` update analysis4 by using unbiased test stat
+ * `analysis4b_sim.R` check if the approach in analysis 4b controls type I error, power etc
  * `analysis6.R` contrast with analysis 4: pool subjects first then compute test stat
+ * `analysis6_sim.R` (check if the approach in analysis 4b controls type I error, power etc).  By way of comparing `analysis4b_sim.R` and `analysis6_sim.R` we conclude that pooling subjects (the 4b approach) is more powerful.
  * `analysis7.R` apply T-test to distance matrices
+ * `analysis7_sim.R` check if the approach in analysis 7 controls type I error, power etc
  * `fun_plot.R` cool 3d plot! totally unrelated to the project though...
  * `graphics_a5.R` Plots which try to align MDS distance matrices to the natural parameter distance grid. (Hard to explain..)
  * `indscal_source.R` Find latent parameterizations from distances (when you don't have parametrically generated stimuli...)

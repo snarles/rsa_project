@@ -75,7 +75,8 @@ generate_copes_params <- function(nrepeats = 3,
 }
 
 generate_copes_data <- function(nrepeats, nsubjects, ncopes, params, coeffs_true, cls,
-                                Sigmas_true, ...) {
+                                Sigmas_true, 
+                                scale = FALSE, ...) {
   ansY <- list()
   p <- dim(coeffs_true[[1]])[2]
   Xindiv <- repmat(params, nrepeats, 1)
@@ -85,13 +86,15 @@ generate_copes_data <- function(nrepeats, nsubjects, ncopes, params, coeffs_true
   for (ii in 1:nsubjects) {
     noise <- mvrnorm(ncopes * nrepeats, rep(0, p), Sigmas_true[[ii]])
     mu <- Xindiv %*% coeffs_true[[ii]]
-    ansY[[ii]] <- mu + noise
+    YY <- mu + noise
+    if (scale) YY <- scale(YY)
+    ansY[[ii]] <- YY
   }
   Ymat <- do.call(rbind, ansY)
   Xmat <- repmat(Xindiv, nsubjects, 1)
   list(Ymat = Ymat, Xmat = Xmat, hdat = hdat, cls = cls,
        params = params, dat = cbind(hdat, Ymat), 
-       coeffs_true = coeffs_true, Sigmas_true = Sigmas_true)
+       coeffs_true = coeffs_true, Sigmas_true = Sigmas_true, nrois = max(cls[, "clus"]))
 }
 
 # lineId::zattach(formals(generate_copes_params))
