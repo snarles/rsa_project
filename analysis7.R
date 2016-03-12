@@ -1,5 +1,6 @@
 source("prepare_dim_reduced.R")
 source("rsa_boot_source.R")
+source("ttest_source.R")
 library(MASS)
 res <- prepare_gambling_data(dfile = "roi/data.rds",pca = FALSE,                              
                              stdz_within = TRUE, avg_subjects = FALSE,
@@ -17,8 +18,9 @@ for (sub in 1:nsubs) {
   sub.X <- Xmat[hdat[, "sub"]==sub, ]
   for (roi.ind in 1:nrois) {
     roi.dat <- sub.dat[, cls[, "clus"]==roi.ind]
-    bt <- ginv(sub.X) %*% roi.dat
-    dmat <- bt %*% t(bt)/dim(roi.dat)[2]
+    ##bt <- ginv(sub.X) %*% roi.dat
+    ##dmat <- bt %*% t(bt)/dim(roi.dat)[2]
+    dmat <- estimate_M(sub.X, roi.dat)/dim(roi.dat)[2]
     dmats[sub, roi.ind, ] <- dmat[upper.tri(dmat, diag = TRUE)]
   }
 }
