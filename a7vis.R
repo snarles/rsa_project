@@ -6,7 +6,7 @@ pvalsA <- readRDS(file = "a7res.rds")
 
 dim.ind  <- 1
 pvals <- pvalsA[, , dim.ind]
-
+nrois <- 28
 rownames(pvals) <- paste0("roi", 1:nrois)
 colnames(pvals) <- paste0("roi", 1:nrois)
 

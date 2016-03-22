@@ -2,9 +2,13 @@ source("prepare_dim_reduced.R")
 source("rsa_boot_source.R")
 source("ttest_source.R")
 library(MASS)
-res <- prepare_gambling_data(dfile = "roi/data.rds",pca = FALSE,                              
+# res <- prepare_gambling_data(dfile = "roi/data.rds",pca = FALSE,                              
+#                              stdz_within = TRUE, avg_subjects = FALSE,
+#                              div_sqrt_p = FALSE)
+res <- prepare_gambling_data(dfile = "roi/data.rds",pca = TRUE, npca = 10,                             
                              stdz_within = TRUE, avg_subjects = FALSE,
                              div_sqrt_p = FALSE)
+
 zattach(res)
 names(res)
 
@@ -44,4 +48,4 @@ image(fliplr(pvals[, , 1] < 0.05))
 image(fliplr(pvals[, , 2] < 0.05))
 image(fliplr(pvals[, , 3] < 0.05))
 
-saveRDS(pvals, "a7res.rds")
+#saveRDS(pvals, "a7res.rds")

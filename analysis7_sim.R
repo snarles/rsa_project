@@ -2,6 +2,7 @@ source("generate_copes_data.R")
 source("rsa_boot_source.R")
 source("ttest_source.R")
 library(MASS)
+library(lineId)
 
 ####
 #  Generate random parameters
@@ -16,7 +17,7 @@ library(MASS)
 #   Sigma_dependence: [0, 1], 0 = all ROIs have indepedent noise
 paramz <- generate_copes_params(shared_coeffs = 0.4,
                                 shared_Sigmas = 0.0,
-                                mixture_param = 0.0, 
+                                mixture_param = 1.0, 
                                 seed = 1, nrois = 28, 
                                 nrepeats = 5
 )
