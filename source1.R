@@ -3,6 +3,7 @@
 library(rgl)
 library(oro.nifti)
 library(prodlim)
+library(igraph)
 
 get_fi <- function(sub, run, cope) {
   subst <- c("001","002","003","004","005","006","007","008",
@@ -59,4 +60,16 @@ get_cluster_inds <- function(a, thres = 1e-2) {
   cls <- abs(cls) > 1e-3
   res <- apply(cls, 2, which)
   lapply(res, function(v) raw_inds[v, , drop = FALSE])
+}
+
+get_cluster_inds2 <- function(a, min.size = 5) {
+  raw_inds <- which(a, arr.ind = TRUE)
+  dd <- pracma::pdist(raw_inds)
+  am <- (dd <= 2) + 0
+  res0 <- clusters(graph.adjacency(am == 1))
+  ans <- lapply(1:res0$no, function(i) which(res0$membership==i))
+  ans <- ans[order(-res0$csize)]
+  lans <- sapply(ans, length)
+  ans <- ans[lans > min.size]
+  lapply(ans, function(v) raw_inds[v, , drop = FALSE])
 }
