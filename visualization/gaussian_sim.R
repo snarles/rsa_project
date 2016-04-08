@@ -41,33 +41,29 @@ dat <- omask[mins[1]:maxs[1], mins[2]:maxs[2], mins[3]:maxs[3]]
 # plot3d(which(dat, TRUE), aspect = FALSE)
 # points3d(which(!dat, TRUE), col = "red", size = 1)
 yvec <- as.factor(dat + 0)
+yvec_num <- as.numeric(dat + 0)
 xmat <- which(dat | TRUE, TRUE)
 # yvec <- as.factor(dat[xmat] + 0)
 colnames(xmat) <- NULL
 
 #res <- randomForest(yvec ~ ., data = data.frame(yvec, xmat))
-res <- svm(yvec ~ ., data = data.frame(yvec, xmat), kernel = "radial", gamma = 0.9)
+# res <- svm(yvec ~ ., data = data.frame(yvec, xmat), kernel = "radial", gamma = 0.9)
 ##res <- locfit(yvec ~ ., data = data.frame(yvec, xmat), family = "binomial", lfproc =)
-
-yvec2 <- predict(res, data = data.frame(yvec, xmat))
-
-plot3d(xmat[yvec == 1, ], aspect = FALSE, size = 1)
-points3d(xmat[yvec2 == 1, ], col = "red", aspect = FALSE)
-
-table(yvec, yvec2)
+# res <- loess(yvec_num ~ ., data = data.frame(yvec_num, xmat), span = 0.5)
+# hist(predict(res, data = data.frame(yvec_num, xmat)))
+# yvec2 <- (predict(res, data = data.frame(yvec_num, xmat)) > 0.2) + 0
+# plot3d(xmat[yvec == 1, ], aspect = FALSE, size = 1)
+# points3d(xmat[yvec2 == 1, ], col = "red", aspect = FALSE)
+# table(yvec, yvec2)
 
 pts_samp <-t(t(pracma::rand(10000, 3)) * (maxs - mins)) + 1
 pts_samp <- rbind(xmat, pts_samp)
 # plot3d(xmat, aspect = FALSE); points3d(pts_samp, col = "red", size = 1)
-y_samp <- predict(res, data = data.frame(yvec = as.factor(rbinom(10000, 1, 0.5)), xmat = pts_samp))
-# y_samp <- knn(xmat, pts_samp, cl = yvec, k = 3)
+# y_samp <- (predict(res, data = data.frame(yvec = as.factor(rbinom(10000, 1, 0.5)), xmat = pts_samp)) > 0.2) + 0
+y_samp <- knn(xmat, pts_samp, cl = yvec, k = 7)
+plot3d(pts_samp[y_samp == 1, ], size = 1 )
+# plot3d(pts_samp[1:nrow(xmat), ][y_samp == 1, ])
 
 
-plot3d(pts_samp[y_samp == 1, ])
-plot3d(pts_samp[1:nrow(xmat), ][y_samp == 1, ])
-
-
-y_samp <- predict(res, data = data.frame(yvec = as.factor(rbinom(10000, 1, 0.5)), xmat = pts_samp), type = "prob")
-plot3d(pts_samp[y_samp[, 2] > 0.5, ])
 
 
