@@ -26,17 +26,17 @@ clsfilt <- sapply(cls, function(a) {
 cls <- cls[clsfilt]
 plot3d(cls[[1]])
 
-source("visualization/source.R")
-cls_ind <- 1
-nrow(cls[[cls_ind]])
-smt <- get_surface(cls[[cls_ind]], cos_thres = 0.3, method = "randomForest")
-plot3d(cls[[cls_ind]], aspect = FALSE)
-points3d(smt, col = "red", size = 1)
+# source("visualization/source.R")
+# cls_ind <- 1
+# nrow(cls[[cls_ind]])
+# smt <- get_surface(cls[[cls_ind]], cos_thres = 0.3, method = "randomForest")
+# plot3d(cls[[cls_ind]], aspect = FALSE)
+# points3d(smt, col = "red", size = 1)
 
 
 xx <- cls[[cls_ind]]
-mins <- apply(xx, 2, min)
-maxs <- apply(xx, 2, max)
+mins <- apply(xx, 2, min) - 2
+maxs <- apply(xx, 2, max) + 2
 dat <- omask[mins[1]:maxs[1], mins[2]:maxs[2], mins[3]:maxs[3]]
 # plot3d(which(dat, TRUE), aspect = FALSE)
 # points3d(which(!dat, TRUE), col = "red", size = 1)
@@ -55,15 +55,18 @@ colnames(xmat) <- NULL
 # plot3d(xmat[yvec == 1, ], aspect = FALSE, size = 1)
 # points3d(xmat[yvec2 == 1, ], col = "red", aspect = FALSE)
 # table(yvec, yvec2)
-
-pts_samp <-t(t(pracma::rand(10000, 3)) * (maxs - mins)) + 1
-pts_samp <- rbind(xmat, pts_samp)
+prob_thres <- 0.66
+pts_samp <-t(t(1.2 * pracma::rand(1e6, 3) - 0.1) * (maxs - mins))
+# pts_samp <- rbind(xmat, pts_samp)
 # plot3d(xmat, aspect = FALSE); points3d(pts_samp, col = "red", size = 1)
 # y_samp <- (predict(res, data = data.frame(yvec = as.factor(rbinom(10000, 1, 0.5)), xmat = pts_samp)) > 0.2) + 0
-y_samp <- knn(xmat, pts_samp, cl = yvec, k = 7)
-plot3d(pts_samp[y_samp == 1, ], size = 1 )
+y_samp <- knn(xmat, pts_samp, cl = yvec, k = 10, prob = TRUE)
+y_prob <- attr(y_samp, "prob")
+hist(y_prob)
+min(y_prob)
+# plot3d(pts_samp[y_samp == 1, ], size = 1 )
 # plot3d(pts_samp[1:nrow(xmat), ][y_samp == 1, ])
+plot3d(pts_samp[y_prob < prob_thres, ], size = 1, col = "red", aspect = FALSE)
+points3d(xmat[yvec ==1, ])
 
-
-
-
+plot3d(pts_samp[y_prob < prob_thres, ], size = 1, col = "red", aspect = FALSE)
