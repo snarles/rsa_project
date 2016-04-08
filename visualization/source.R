@@ -42,3 +42,13 @@ get_surface <- function(xx, angles_samp = NULL, cos_thres = 0.1, method = c("ran
   xx_decentered
 }
 
+
+# gets surface from array, using knn method
+get_surface2 <- function(a, npoints = 1e5, k = 10) {
+  yvec <- as.factor(a + 0)
+  xmat <- which(a | TRUE, TRUE)
+  pts_samp <-t(t(1.2 * pracma::rand(npoints, 3) - 0.1) * dim(a))
+  y_samp <- knn(xmat, pts_samp, cl = yvec, k = k, prob = TRUE)
+  y_prob <- attr(y_samp, "prob")
+  pts_samp[y_prob < 0.51, ]
+}
