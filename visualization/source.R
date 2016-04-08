@@ -3,6 +3,7 @@
 ####
 
 library(randomForest)
+library(class)
 
 get_surface <- function(xx, angles_samp = NULL, cos_thres = 0.1, method = c("randomForest", "loess"), ...) {
   method <- method[1]
