@@ -7,6 +7,10 @@ library(AlgDesign)
 library(MASS)
 library(rgl)
 library(AnalyzeFMRI)
+library(class)
+library(locfit)
+library(e1071)
+library(randomForest)
 gres <- 100
 lbda <- 3
 arr <- array(rnorm(gres^3), rep(gres, 3))
@@ -29,21 +33,39 @@ smt <- get_surface(cls[[cls_ind]], cos_thres = 0.3, method = "randomForest")
 plot3d(cls[[cls_ind]], aspect = FALSE)
 points3d(smt, col = "red", size = 1)
 
-library(randomForest)
+
 xx <- cls[[cls_ind]]
 mins <- apply(xx, 2, min)
 maxs <- apply(xx, 2, max)
 dat <- omask[mins[1]:maxs[1], mins[2]:maxs[2], mins[3]:maxs[3]]
-plot3d(which(dat, TRUE), aspect = FALSE)
-points3d(which(!dat, TRUE), col = "red", size = 1)
+# plot3d(which(dat, TRUE), aspect = FALSE)
+# points3d(which(!dat, TRUE), col = "red", size = 1)
 yvec <- as.factor(dat + 0)
 xmat <- which(dat | TRUE, TRUE)
+# yvec <- as.factor(dat[xmat] + 0)
 colnames(xmat) <- NULL
-res <- randomForest(yvec ~ ., data = data.frame(yvec, xmat))
-pts_samp <-t(t(pracma::rand(10000, 3)) * (maxs - mins) + mins)
-plot3d(xx, aspect = FALSE); points3d(pts_samp, col = "red", size = 1)
+
+#res <- randomForest(yvec ~ ., data = data.frame(yvec, xmat))
+res <- svm(yvec ~ ., data = data.frame(yvec, xmat), kernel = "radial", gamma = 0.9)
+##res <- locfit(yvec ~ ., data = data.frame(yvec, xmat), family = "binomial", lfproc =)
+
+yvec2 <- predict(res, data = data.frame(yvec, xmat))
+
+plot3d(xmat[yvec == 1, ], aspect = FALSE, size = 1)
+points3d(xmat[yvec2 == 1, ], col = "red", aspect = FALSE)
+
+table(yvec, yvec2)
+
+pts_samp <-t(t(pracma::rand(10000, 3)) * (maxs - mins)) + 1
+pts_samp <- rbind(xmat, pts_samp)
+# plot3d(xmat, aspect = FALSE); points3d(pts_samp, col = "red", size = 1)
 y_samp <- predict(res, data = data.frame(yvec = as.factor(rbinom(10000, 1, 0.5)), xmat = pts_samp))
+# y_samp <- knn(xmat, pts_samp, cl = yvec, k = 3)
+
+
 plot3d(pts_samp[y_samp == 1, ])
+plot3d(pts_samp[1:nrow(xmat), ][y_samp == 1, ])
+
 
 y_samp <- predict(res, data = data.frame(yvec = as.factor(rbinom(10000, 1, 0.5)), xmat = pts_samp), type = "prob")
 plot3d(pts_samp[y_samp[, 2] > 0.5, ])
