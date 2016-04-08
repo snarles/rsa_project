@@ -65,6 +65,19 @@ xx_decentered <- t(t(xx_samp) + mu)
 plot3d(xx, size = 1, aspect = FALSE)
 points3d(xx_decentered, col = "red")
 
+
+## rescale
+
+# mask_inds <- readRDS('visualization/brain_surface.rds')
+mask_inds <- xx_decentered
+# mask_inds <- t(t(mask_inds) - c(27, 32, 23))
+# mask_inds <- mask_inds * 3
+mask_inds <- mask_inds /2
+mask_inds <- t(t(mask_inds) + c(46, 55, 46))
+
+apply(mask_inds, 2, max)
+apply(mask_inds, 2, min)
+
 ## save the sampled points!!
 
-saveRDS(xx_decentered, file = 'visualization/brain_surface.rds')
+saveRDS(mask_inds, file = 'visualization/brain_surface.rds')
