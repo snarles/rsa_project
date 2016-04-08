@@ -17,7 +17,7 @@ for (i in 1:ncl) {
   a[xx2] <- TRUE
   # rgl::plot3d(which(a, TRUE), aspect = FALSE)
   smt <- get_surface2(a, k = 10, npoints = 1e6)
-  rgl::plot3d(smt, aspect = FALSE)
+  # rgl::plot3d(smt, aspect = FALSE)
   smt2 <- t(t(smt) + mins)
   # rgl::plot3d(xx, aspect = FALSE)
   # rgl::points3d(smt2, col = "red", size = 1)
@@ -25,3 +25,12 @@ for (i in 1:ncl) {
 }
 
 saveRDS(cl_pts, file = "visualization/roi_surfaces.rds")
+
+## viewing results
+
+library(rgl)
+i <- 0
+
+i <- i + 1
+plot3d(cl[cl[, "clus"]==i, 1:3], aspect = FALSE)
+points3d(cl_pts[[i]], size = 1, col = "red")
