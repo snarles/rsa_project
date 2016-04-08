@@ -1,4 +1,4 @@
-
+source("source1.R")
 
 ## base data for clustering
 roi_dat <- readNIfTI('roi/zstat.nii.gz')
