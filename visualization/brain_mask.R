@@ -59,4 +59,12 @@ plot(xx_samp[, c(1, 3)], pch = ".", asp = 1, col = grey(0, 0.3))
 plot(xx_samp[, c(2, 3)], pch = ".", asp = 1, col = grey(0, 0.3))
 plot(xx2[, c(2, 3)], pch = ".", asp = 1)
 
+## convert back to original space
 
+xx_decentered <- t(t(xx_samp) + mu)
+plot3d(xx, size = 1, aspect = FALSE)
+points3d(xx_decentered, col = "red")
+
+## save the sampled points!!
+
+saveRDS(xx_decentered, file = 'visualization/brain_surface.rds')
