@@ -13,7 +13,7 @@ colnames(params) <- c("angle", "height", "run")
 
 res0 <- oro.nifti::readNIfTI("DavisPoldrack_Birds_Archive/betaseries_MNI/bg_image.nii.gz")
 res <- oro.nifti::readNIfTI("DavisPoldrack_Birds_Archive/betaseries_MNI/002_lsone_MNI.nii.gz")
-dim(res0)
+dim(res0) # [1]  91 109  91
 dim(res) # [1]  91 109  91 108
 
 gplot(res0[, , 30])
@@ -42,4 +42,20 @@ gplot(rescov[, , 30])
 
 summary(as.numeric(rescov))
 hist(as.numeric(rescov), breaks = 40)
+
+ids <- 10 * 1:9
+for (z in ids)
+  gplot(rescov[, , z])
+
+for (z in ids)
+  gplot(rescov[, , z] > 10)
+
+for (z in ids)
+  gplot(rescov[, , z] > 20)
+
+
+for (z in ids)
+  gplot(rescov[, , z] > 30)
+
+
 
