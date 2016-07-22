@@ -22,7 +22,30 @@ for (f in fnos) {
   stypz[[f]] <- styps
 }
 
-ind <- 7
+for (ind in 1:length(fnos)) {
+  pdf(paste0("birds_analysis/pplots/param", ind, ".pdf"))
+  plot(paramz[[ind]][, -3])
+  title(ind)
+  dev.off()
+}
+
+ind <- 1
 mat <- cbind(paramz[[ind]][, -3], stypz[[ind]][, 1])
 plot3d(mat)
 
+
+## OBSERVATIONS
+##  Ind Sub  Params SubTyp  
+##    1   2       A
+##    2   3       B
+##    3   4       A
+##    4   5       C
+##    5   6       B
+##    6   7       D
+##    7   8       C
+##    8   9       B
+##    9   11      C
+##   10   12      A
+##   11   13      B
+##   12   14      C
+##   13   17      B
