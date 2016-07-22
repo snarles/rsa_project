@@ -29,23 +29,23 @@ for (ind in 1:length(fnos)) {
   dev.off()
 }
 
-ind <- 1
+ind <- 13
 mat <- cbind(paramz[[ind]][, -3], stypz[[ind]][, 1])
 plot3d(mat)
 
 
 ## OBSERVATIONS
 ##  Ind Sub  Params SubTyp  
-##    1   2       A
-##    2   3       B
-##    3   4       A
-##    4   5       C
-##    5   6       B
-##    6   7       D
-##    7   8       C
-##    8   9       B
-##    9   11      C
-##   10   12      A
-##   11   13      B
-##   12   14      C
-##   13   17      B
+##    1   2       A U-shaped in height
+##    2   3       B flat
+##    3   4       A irregular
+##    4   5       C upside down flattish
+##    5   6       B U-shaped in height
+##    6   7       D irregular
+##    7   8       C wonton: more U-shaped in angle
+##    8   9       B wonton
+##    9   11      C irregular: more curved in angle
+##   10   12      A U-shaped in height
+##   11   13      B asymmetric U-shaped in height (greater typ for short)
+##   12   14      C wonton: more U-shaped in angle
+##   13   17      B increasing linearly in angle, u-shaped in height
