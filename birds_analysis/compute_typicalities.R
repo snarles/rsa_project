@@ -69,21 +69,35 @@ angl_h <- mean(angs)
 heit_h <- mean(heits)
 umix <- c(0.25, 0.75)
 lmix <- c(0.75, 0.25)
+Umix <- c(0, 1)
+Lmix <- c(1, 0)
+
 
 mdptz <- list()
-ptypz <- list()
+cornerz <- list()
+phtypz <- list()
+pstypz <- list()
 for (i in 1:13) {
   params <- paramz[[i]]
   nest <- 1 + (params[, 1] > angl_h) + 2 * (params[, 2] > heit_h)
   mida <- ifelse(params[, 1] > angl_h, sum(umix * angs), sum(lmix * angs))
   midh <- ifelse(params[, 2] > heit_h, sum(umix * heits), sum(lmix * heits))
+  cornera <- ifelse(params[, 1] > angl_h, sum(Umix * angs), sum(Lmix * angs))
+  cornerh <- ifelse(params[, 2] > heit_h, sum(Umix * heits), sum(Lmix * heits))
   mdpts <- cbind(nest, mida, midh)
+  corners <- cbind(nest, cornera, cornerh)
   mdptz[[i]] <- mdpts
+  cornerz[[i]] <- corners
   diFF <- params[, -3] - mdpts[, -1]
   diFF[, 1] <- diFF[, 1]/angRANGE
   diFF[, 2] <- diFF[, 2]/heitRANGE
-  ptyps <- cbind(diFF, rowSums(diFF^2), exp(-10 * rowSums(diFF^2)))
-  ptypz[[i]] <- ptyps
+  phtyps <- cbind(diFF, rs = rowSums(diFF^2), v = exp(-10 * rowSums(diFF^2)))
+  phtypz[[i]] <- phtyps
+  diFF <- params[, -3] - corners[, -1]
+  diFF[, 1] <- diFF[, 1]/angRANGE
+  diFF[, 2] <- diFF[, 2]/heitRANGE
+  pstyps <- cbind(diFF, rs = rowSums(diFF^2), v = exp(-10 * rowSums(diFF^2)))
+  pstypz[[i]] <- pstyps
   # plot(params[, -3])
   # for (i in 1:4) {
   #   points(params[nest==i, -3], col = rainbow(4)[i])
@@ -91,5 +105,11 @@ for (i in 1:13) {
   #          col = rainbow(4)[i], pch = "+")
   # }
 }
+inds <- 1
+plot3d(cbind(paramz[[inds]][, -3], phtypz[[inds]]$v))
+plot3d(cbind(paramz[[inds]][, -3], pstypz[[inds]]$v))
 
-save(mdptz, ptypz, paramz, stypz, file = "birds_analysis/computed_typs.RData")
+
+save(mdptz, cornerz, phtypz, pstypz, paramz, stypz, file = "birds_analysis/computed_typs.RData")
+
+## load("birds_analysis/computed_typs.RData", verbose = TRUE)
