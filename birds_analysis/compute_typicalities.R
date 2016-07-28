@@ -21,13 +21,13 @@ for (f in fnos) {
   styps <- read.table(fpath, header = FALSE, sep = " ")
   stypz[[f]] <- styps
 }
-
-for (ind in 1:length(fnos)) {
-  pdf(paste0("birds_analysis/pplots/param", ind, ".pdf"))
-  plot(paramz[[ind]][, -3])
-  title(ind)
-  dev.off()
-}
+# 
+# for (ind in 1:length(fnos)) {
+#   pdf(paste0("birds_analysis/pplots/param", ind, ".pdf"))
+#   plot(paramz[[ind]][, -3])
+#   title(ind)
+#   dev.off()
+# }
 
 ind <- 13
 mat <- cbind(paramz[[ind]][, -3], stypz[[ind]][, 1])
