@@ -4,7 +4,7 @@ lambda_curvez <- list()
 
 for (ind in 1:13){
   brain <- get_brain(ind)
-  lbdas <- c(2,5,10,20,30)
+  lbdas <- c(2,5,10,20,30,40,50)
   nl <- length(lbdas)
   
   mat_sub <- matrix(0, nl, 3)
@@ -26,3 +26,5 @@ for (ind in 1:13){
   lambda_curves <- cbind(lbdas, mat_sub)
   lambda_curvez[[ind]] <- lambda_curves
 }
+
+save(lambda_curvez, file = "birds_analysis/wbt.rda")
