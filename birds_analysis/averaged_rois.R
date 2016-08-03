@@ -29,10 +29,25 @@ save(m_allz, file = "birds_analysis/m_allz.rda")
 m_allz <- lapply(m_allz, log)
 
 
+infl_point_lvs <- function(v) {
+  v <- sort(m_allz[[1]])
+  v <- v[v > -Inf]
+  plot(v, type = "l")
+  dv <- v[-1] - v[-length(v)]
+  plot(dv, type = "l", ylim = c(-1e-2, 1e-2))
+  d2v <- dv[-1] - dv[-length(dv)]
+  plot(d2v, type = "l", ylim = c(-1e-3, 1e-3))
+  abline(h = 1e-4, col = "red")
+  
+}
+
 plot(sort(m_allz[[1]]), type = "l", main = 1)
 plot(sort(m_allz[[2]]), type = "l", main = 2)
+plot(sort(m_allz[[7]]), type = "l", main = 7)
+plot(sort(m_allz[[12]]), type = "l", main = 12)
 
 
+hist(m_allz[[1]], breaks = 30)
 plot3d(which(m_allz[[1]] > 17, arr.ind = TRUE))
 #points3d(which(m_allz[[2]] > 16, arr.ind = TRUE), col = "red")
 #points3d(which(m_allz[[4]] > 17, arr.ind = TRUE), col = "yellow")
