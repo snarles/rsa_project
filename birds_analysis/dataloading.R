@@ -50,6 +50,16 @@ projection_brainmap <- function(brain, v, center = TRUE) {
   ans
 }
 
+variance_brainmap <- function(brain, center = TRUE) {
+  if (center) {
+    ans <- apply(brain, c(1,2,3), function(w) f2(w- mean(w)))
+  }
+  else {
+    ans <- apply(brain, c(1,2,3), function(w) f2(w))
+  }
+  ans
+}
+
 gplot <- function(sl) {
   image(t(flipud(sl)), col = gray.colors(10))
 }
