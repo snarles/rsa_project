@@ -42,6 +42,17 @@ gplot((log(m_all) > 16)[, , 30])
 gplot((log(m_all) > 16)[, , 40])
 
 
-gplot((log(m_all) > 14)[, , 20])
-gplot((log(m_all) > 14)[, , 30])
-gplot((log(m_all) > 14)[, , 40])
+gplot((log(m_all) > 15.2)[, , 20])
+gplot((log(m_all) > 15.2)[, , 30])
+gplot((log(m_all) > 15.2)[, , 40])
+
+library(rgl)
+plot3d(which((log(m_all) > 15.9), arr.ind = TRUE))
+
+plot(sort(log(m_both)))
+gplot((log(m_both) > 12.5)[, , 20])
+gplot((log(m_both) > 11)[, , 30])
+gplot((log(m_both) > 11)[, , 40])
+
+plot3d(which((log(m_all) > 15.9), arr.ind = TRUE))
+points3d(which((log(m_both) > 12.5), arr.ind = TRUE), add = TRUE, col = "red")
