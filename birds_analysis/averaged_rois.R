@@ -22,3 +22,5 @@ for (ind in 1:13){
 }
 
 save(lambda_curvez, file = "birds_analysis/wbt.rda")
+
+
