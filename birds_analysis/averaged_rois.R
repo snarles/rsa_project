@@ -23,10 +23,11 @@ for (ind in 1:13){
 
 }
 
-save(m_allz, file = "birds_analysis/m_allz.rda")
+##save(m_allz, file = "birds_analysis/m_allz.rda")
+load("birds_analysis/m_allz.rda")
 
-
-m_allz <- lapply(m_allz, log)
+log2 <- function(v) log(pmax(v, 1))
+m_allz <- lapply(m_allz, log2)
 
 
 ma_filt_v <- function(v, bandw = 100) {
@@ -85,8 +86,14 @@ thresholds <- sapply(endpointz, `[[`, 2)
 # #points3d(which(m_allz[[3]] > 17, arr.ind = TRUE), col = "blue")
 # points3d(which(m_allz[[4]] > 17, arr.ind = TRUE), col = "yellow")
 
+
+
 indx <- 5; plot3d(which(m_allz[[indx]] > thresholds[indx], TRUE), col = "black")
 indx <- 8; points3d(which(m_allz[[indx]] > thresholds[indx], TRUE), col = "red")
+
+m_allz <- lapply(m_allz, function(v) {
+  v[v < 0] <- 0
+})
 
 m_avg <- Reduce(`+`, m_allz)/13
 dim(m_avg)
