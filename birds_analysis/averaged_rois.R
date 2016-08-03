@@ -35,7 +35,8 @@ plot(sort(m_allz[[2]]), type = "l", main = 2)
 
 plot3d(which(m_allz[[1]] > 17, arr.ind = TRUE))
 #points3d(which(m_allz[[2]] > 16, arr.ind = TRUE), col = "red")
-points3d(which(m_allz[[4]] > 17, arr.ind = TRUE), col = "yellow")
+#points3d(which(m_allz[[4]] > 17, arr.ind = TRUE), col = "yellow")
+points3d(which(m_allz[[5]] > 18, arr.ind = TRUE), col = "yellow")
 
 
 plot3d(which(m_allz[[2]] > 17, arr.ind = TRUE), col = "red")
